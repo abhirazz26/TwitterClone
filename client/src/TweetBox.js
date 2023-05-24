@@ -6,13 +6,15 @@ import { Button } from "@material-ui/core";
 import axios from 'axios';
 import { TwitterContractAddress } from './config.js';
 import {ethers} from 'ethers';
-import Twitter from './utils/TwitterContract.json'
+import Twitter from './utils/TwitterContract.json';
 
 function TweetBox() {
   const [tweetMessage, setTweetMessage] = useState("");
   const [tweetImage, setTweetImage] = useState("");
   const [avatarOptions, setAvatarOptions] = useState("");
-
+  const [url,setURL] = useState(null);
+  const key = process.env.REACT_APP_PINATA_KEY;
+const secret = process.env.REACT_APP_PINATA_SECRET;
   const addTweet = async () => {
     let tweet = {
       'tweetText': tweetMessage,
@@ -31,9 +33,14 @@ function TweetBox() {
           signer
         )
         console.log(TwitterContract);
-        let twitterTx = await TwitterContract.addTweet(tweet.tweetText, tweet.isDeleted);
-
-        console.log(twitterTx);
+        if(url)
+        {
+            let twitterTx = await TwitterContract.addTweet(tweet.tweetText,url,tweet.isDeleted);
+            console.log(twitterTx);
+        }
+        else{
+          window.alert("Wait for image to upload on IPFS");
+        }
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -41,6 +48,46 @@ function TweetBox() {
       console.log("Error submitting new Tweet", error);
     }
   }
+
+  const sendFiletoIPFS = async(e)=>{
+    e.preventDefault();
+    if (tweetImage) {
+      try {
+
+          const formData = new FormData();
+          formData.append("file", tweetImage);
+          console.log(tweetImage);
+          console.log(key, secret);
+          const resFile = await axios({
+              method: "post",
+              url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+              data: formData,
+              headers: {
+                  'pinata_api_key': key,
+                  'pinata_secret_api_key': secret,
+                  "Content-Type": "multipart/form-data"
+              },
+          });
+
+          const ImgHash = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+          console.log(ImgHash); 
+          setURL(ImgHash);
+//Take a look at your Pinata Pinned section, you will see a new file added to you list.   
+
+      } catch (error) {
+          console.log("Error sending File to IPFS: ")
+          console.log(error)
+      }
+  }else{
+    console.log("No Image");
+  }
+}
+
+const getImageHash=async (e)=>{
+  e.preventDefault();
+  setTweetImage(e.target.files[0]);
+  console.log(tweetImage);
+}
 
   const sendTweet = (e) => {
     e.preventDefault();
@@ -73,11 +120,15 @@ function TweetBox() {
             type="text"
           />
           <input
-          onChange={(e) => setTweetImage(e.target.files[0])}
+          onChange={getImageHash}
           className="tweetBox__imageInput"
-          placeholder="Optional: Enter image URL"
+          placeholder="Optional: Select Image"
           type="file"
+          required
         />
+        <button id="ImageHash" onClick={sendFiletoIPFS} >
+        Get IPFS Hash
+        </button>
         </div>
         
         <Button

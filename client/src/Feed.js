@@ -17,9 +17,11 @@ function Feed({personal}) {
     // Here we set a personal flag around the tweets
     for(let i=0; i<allTweets.length; i++) {
       if(allTweets[i].username.toLowerCase() == address.toLowerCase()) {
+        console.log(allTweets[i].imgHash);
         let tweet = {
           'id': allTweets[i].id,
           'tweetText': allTweets[i].tweetText,
+          'imgHash': allTweets[i].imgHash,
           'isDeleted': allTweets[i].isDeleted,
           'username': allTweets[i].username,
           'personal': true
@@ -30,6 +32,7 @@ function Feed({personal}) {
           'id': allTweets[i].id,
           'tweetText': allTweets[i].tweetText,
           'isDeleted': allTweets[i].isDeleted,
+          'imgHash': allTweets[i].imgHash,
           'username': allTweets[i].username,
           'personal': false
         };
@@ -113,6 +116,7 @@ function Feed({personal}) {
             displayName={post.username}
             text={post.tweetText}
             personal={post.personal}
+            imgHash={post.imgHash}
             onClick={deleteTweet(post.id)}
           />
         ))}

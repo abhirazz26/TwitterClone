@@ -10,7 +10,7 @@ import PublishIcon from "@material-ui/icons/Publish";
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const Post = forwardRef(
-  ({ displayName, text, personal, onClick }, ref) => {
+  ({ displayName, text, personal, imgHash, onClick }, ref) => {
 
     return (
       <div className="post" ref={ref}>
@@ -29,6 +29,8 @@ const Post = forwardRef(
               </h3>
             </div>
             <div className="post__headerDescription">
+              {/*<img src={imgHash} alt="TweetImage" crossorigin="anonymous"/>*/}
+              <a href={imgHash}> Click to view image </a>
               <p>{text}</p>
             </div>
           </div>

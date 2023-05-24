@@ -45,6 +45,11 @@
 				"type": "string"
 			},
 			{
+				"internalType": "string",
+				"name": "imgHash",
+				"type": "string"
+			},
+			{
 				"internalType": "bool",
 				"name": "isDeleted",
 				"type": "bool"
@@ -95,6 +100,11 @@
 						"type": "string"
 					},
 					{
+						"internalType": "string",
+						"name": "imgHash",
+						"type": "string"
+					},
+					{
 						"internalType": "bool",
 						"name": "isDeleted",
 						"type": "bool"
@@ -127,6 +137,11 @@
 					{
 						"internalType": "string",
 						"name": "tweetText",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "imgHash",
 						"type": "string"
 					},
 					{
